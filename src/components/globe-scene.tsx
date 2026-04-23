@@ -6,7 +6,9 @@ import type { LocationPoint } from "@/data/locations";
 
 type GlobeSceneProps = {
   points: LocationPoint[];
+  routes: { id: string; start: LocationPoint; end: LocationPoint }[];
   selectedId: string;
+  autoRotate: boolean;
   onSelect: (id: string) => void;
 };
 
@@ -28,12 +30,12 @@ function Arc({ start, end }: { start: LocationPoint; end: LocationPoint }) {
     const endVec = toVector3(end.lat, end.lng, EARTH_RADIUS + 0.02);
     const midVec = startVec.clone().add(endVec).multiplyScalar(0.5).normalize().multiplyScalar(EARTH_RADIUS + 0.75);
     const curve = new THREE.CatmullRomCurve3([startVec, midVec, endVec]);
-    return new THREE.TubeGeometry(curve, 60, 0.01, 8, false);
+    return new THREE.TubeGeometry(curve, 60, 0.004, 8, false);
   }, [start.lat, start.lng, end.lat, end.lng]);
 
   return (
     <mesh geometry={geometry}>
-      <meshBasicMaterial color="#5ffbf1" transparent opacity={0.82} />
+      <meshBasicMaterial color="#5ffbf1" transparent opacity={0.36} />
     </mesh>
   );
 }
@@ -57,7 +59,7 @@ function Marker({
   );
 }
 
-export default function GlobeScene({ points, selectedId, onSelect }: GlobeSceneProps) {
+export default function GlobeScene({ points, routes, selectedId, autoRotate, onSelect }: GlobeSceneProps) {
   const earthMap = useMemo(
     () => new THREE.TextureLoader().load("https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg"),
     []
@@ -70,8 +72,6 @@ export default function GlobeScene({ points, selectedId, onSelect }: GlobeSceneP
     () => new THREE.TextureLoader().load("https://threejs.org/examples/textures/planets/earth_specular_2048.jpg"),
     []
   );
-
-  const routes = useMemo(() => points.slice(0, -1).map((point, index) => ({ start: point, end: points[index + 1] })), [points]);
 
   return (
     <Canvas camera={{ position: [0, 0.6, 6.4], fov: 45 }}>
@@ -95,14 +95,22 @@ export default function GlobeScene({ points, selectedId, onSelect }: GlobeSceneP
       </Sphere>
 
       {routes.map((route) => (
-        <Arc key={`${route.start.id}-${route.end.id}`} start={route.start} end={route.end} />
+        <Arc key={route.id} start={route.start} end={route.end} />
       ))}
 
       {points.map((point) => (
         <Marker key={point.id} point={point} selected={selectedId === point.id} onSelect={onSelect} />
       ))}
 
-      <OrbitControls enablePan={false} minDistance={4.1} maxDistance={9.8} autoRotate autoRotateSpeed={0.32} />
+      <OrbitControls
+        enablePan={false}
+        enableDamping
+        dampingFactor={0.08}
+        minDistance={4.1}
+        maxDistance={9.8}
+        autoRotate={autoRotate}
+        autoRotateSpeed={0.32}
+      />
     </Canvas>
   );
 }
