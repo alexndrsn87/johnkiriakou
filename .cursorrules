@@ -1,0 +1,7 @@
+Project: John Kiriakou Interactive Site
+
+Rules:
+- Build with React + Vite, Tailwind CSS, and shadcn/ui-style components.
+- Keep all location and timeline data in src/data/locations.ts.
+- Use Three.js for a true 3D globe that supports free rotation and route arcs.
+- Include credible source links when adding or editing biographical facts.

@@ -1,0 +1,35 @@
+{
+  "name": "john-kiriakou-interactive-site",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@radix-ui/react-scroll-area": "^1.2.10",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@react-three/drei": "^10.7.4",
+    "@react-three/fiber": "^9.4.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.542.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "tailwind-merge": "^3.3.1",
+    "three": "^0.180.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.1.0",
+    "@tailwindcss/vite": "^4.1.13",
+    "@types/node": "^24.6.1",
+    "@types/react": "^19.1.17",
+    "@types/react-dom": "^19.1.9",
+    "@types/three": "^0.180.0",
+    "tailwindcss": "^4.1.13",
+    "typescript": "~5.9.3",
+    "vite": "^7.1.7"
+  }
+}

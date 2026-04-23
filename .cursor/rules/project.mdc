@@ -1,0 +1,12 @@
+---
+description: Project instructions for John Kiriakou Interactive Site
+alwaysApply: true
+---
+
+# John Kiriakou Interactive Site Rules
+
+- Use a modern React + Vite architecture with Tailwind CSS and shadcn/ui patterns.
+- Keep event/location data in `src/data/locations.ts`.
+- Maintain a real 3D globe experience (Three.js) with route arcs and selectable points.
+- Preserve high visual quality, accessibility, and responsive behavior.
+- Keep source links for any biographical or historical detail changes.
