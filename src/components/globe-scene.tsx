@@ -1,5 +1,5 @@
-import { useMemo } from "react";
-import { Canvas } from "@react-three/fiber";
+import { useMemo, useRef } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Sphere, Stars } from "@react-three/drei";
 import * as THREE from "three";
 import type { LocationPoint } from "@/data/locations";
@@ -59,7 +59,19 @@ function Marker({
   );
 }
 
-export default function GlobeScene({ points, routes, selectedId, autoRotate, onSelect }: GlobeSceneProps) {
+function GlobeContent({
+  points,
+  routes,
+  selectedId,
+  onSelect,
+}: {
+  points: LocationPoint[];
+  routes: { id: string; start: LocationPoint; end: LocationPoint }[];
+  selectedId: string;
+  onSelect: (id: string) => void;
+}) {
+  const globeGroupRef = useRef<THREE.Group>(null);
+  const targetQuaternionRef = useRef(new THREE.Quaternion());
   const earthMap = useMemo(
     () => new THREE.TextureLoader().load("https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg"),
     []
@@ -73,15 +85,30 @@ export default function GlobeScene({ points, routes, selectedId, autoRotate, onS
     []
   );
 
+  const selectedPoint = useMemo(
+    () => points.find((point) => point.id === selectedId) ?? points[0],
+    [points, selectedId]
+  );
+
+  useFrame(() => {
+    if (!globeGroupRef.current || !selectedPoint) {
+      return;
+    }
+
+    const selectedVector = toVector3(selectedPoint.lat, selectedPoint.lng, 1).normalize();
+    const frontVector = new THREE.Vector3(0, 0, 1);
+    targetQuaternionRef.current.setFromUnitVectors(selectedVector, frontVector);
+
+    // Keep the globe upright by removing roll while allowing vertical pitch motion.
+    const targetEuler = new THREE.Euler().setFromQuaternion(targetQuaternionRef.current, "YXZ");
+    targetEuler.z = 0;
+    targetQuaternionRef.current.setFromEuler(targetEuler);
+
+    globeGroupRef.current.quaternion.slerp(targetQuaternionRef.current, 0.07);
+  });
+
   return (
-    <Canvas camera={{ position: [0, 0.6, 6.4], fov: 45 }}>
-      <color attach="background" args={["#020617"]} />
-      <ambientLight intensity={0.45} />
-      <directionalLight position={[6, 4, 5]} intensity={2.2} color="#94dbff" />
-      <pointLight position={[-6, -2, -5]} intensity={1.4} color="#1dd3f8" />
-
-      <Stars radius={50} depth={20} count={6000} factor={3} fade speed={0.6} />
-
+    <group ref={globeGroupRef}>
       <Sphere args={[EARTH_RADIUS, 80, 80]}>
         <meshPhongMaterial map={earthMap} bumpMap={bumpMap} bumpScale={0.06} specularMap={specMap} specular="#6797bf" shininess={8} />
       </Sphere>
@@ -101,6 +128,21 @@ export default function GlobeScene({ points, routes, selectedId, autoRotate, onS
       {points.map((point) => (
         <Marker key={point.id} point={point} selected={selectedId === point.id} onSelect={onSelect} />
       ))}
+    </group>
+  );
+}
+
+export default function GlobeScene({ points, routes, selectedId, autoRotate, onSelect }: GlobeSceneProps) {
+  return (
+    <Canvas camera={{ position: [0, 0.6, 6.4], fov: 45 }}>
+      <color attach="background" args={["#020617"]} />
+      <ambientLight intensity={0.45} />
+      <directionalLight position={[6, 4, 5]} intensity={2.2} color="#94dbff" />
+      <pointLight position={[-6, -2, -5]} intensity={1.4} color="#1dd3f8" />
+
+      <Stars radius={50} depth={20} count={6000} factor={3} fade speed={0.6} />
+
+      <GlobeContent points={points} routes={routes} selectedId={selectedId} onSelect={onSelect} />
 
       <OrbitControls
         enablePan={false}
