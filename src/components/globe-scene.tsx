@@ -9,6 +9,8 @@ type GlobeSceneProps = {
   routes: { id: string; start: LocationPoint; end: LocationPoint }[];
   selectedId: string;
   autoRotate: boolean;
+  interactionMode: "idle" | "selected" | "reading";
+  activeRouteId: string | null;
   onSelect: (id: string) => void;
 };
 
@@ -24,7 +26,15 @@ const toVector3 = (lat: number, lng: number, radius = EARTH_RADIUS) => {
   );
 };
 
-function Arc({ start, end }: { start: LocationPoint; end: LocationPoint }) {
+function Arc({
+  start,
+  end,
+  isActive,
+}: {
+  start: LocationPoint;
+  end: LocationPoint;
+  isActive: boolean;
+}) {
   const geometry = useMemo(() => {
     const startVec = toVector3(start.lat, start.lng, EARTH_RADIUS + 0.02);
     const endVec = toVector3(end.lat, end.lng, EARTH_RADIUS + 0.02);
@@ -35,7 +45,7 @@ function Arc({ start, end }: { start: LocationPoint; end: LocationPoint }) {
 
   return (
     <mesh geometry={geometry}>
-      <meshBasicMaterial color="#5ffbf1" transparent opacity={0.36} />
+      <meshBasicMaterial color={isActive ? "#7df9ff" : "#5ffbf1"} transparent opacity={isActive ? 0.7 : 0.22} />
     </mesh>
   );
 }
@@ -63,11 +73,15 @@ function GlobeContent({
   points,
   routes,
   selectedId,
+  interactionMode,
+  activeRouteId,
   onSelect,
 }: {
   points: LocationPoint[];
   routes: { id: string; start: LocationPoint; end: LocationPoint }[];
   selectedId: string;
+  interactionMode: "idle" | "selected" | "reading";
+  activeRouteId: string | null;
   onSelect: (id: string) => void;
 }) {
   const globeGroupRef = useRef<THREE.Group>(null);
@@ -104,7 +118,8 @@ function GlobeContent({
     targetEuler.z = 0;
     targetQuaternionRef.current.setFromEuler(targetEuler);
 
-    globeGroupRef.current.quaternion.slerp(targetQuaternionRef.current, 0.07);
+    const damping = interactionMode === "reading" ? 0.045 : 0.075;
+    globeGroupRef.current.quaternion.slerp(targetQuaternionRef.current, damping);
   });
 
   return (
@@ -122,7 +137,7 @@ function GlobeContent({
       </Sphere>
 
       {routes.map((route) => (
-        <Arc key={route.id} start={route.start} end={route.end} />
+        <Arc key={route.id} start={route.start} end={route.end} isActive={route.id === activeRouteId} />
       ))}
 
       {points.map((point) => (
@@ -132,7 +147,15 @@ function GlobeContent({
   );
 }
 
-export default function GlobeScene({ points, routes, selectedId, autoRotate, onSelect }: GlobeSceneProps) {
+export default function GlobeScene({
+  points,
+  routes,
+  selectedId,
+  autoRotate,
+  interactionMode,
+  activeRouteId,
+  onSelect,
+}: GlobeSceneProps) {
   return (
     <Canvas camera={{ position: [0, 0.6, 6.4], fov: 45 }}>
       <color attach="background" args={["#020617"]} />
@@ -142,7 +165,14 @@ export default function GlobeScene({ points, routes, selectedId, autoRotate, onS
 
       <Stars radius={50} depth={20} count={6000} factor={3} fade speed={0.6} />
 
-      <GlobeContent points={points} routes={routes} selectedId={selectedId} onSelect={onSelect} />
+      <GlobeContent
+        points={points}
+        routes={routes}
+        selectedId={selectedId}
+        interactionMode={interactionMode}
+        activeRouteId={activeRouteId}
+        onSelect={onSelect}
+      />
 
       <OrbitControls
         enablePan={false}

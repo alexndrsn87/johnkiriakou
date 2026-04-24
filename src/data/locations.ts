@@ -8,6 +8,14 @@ export type LocationPoint = {
   year: string;
   description: string;
   story: string;
+  era?: string;
+  importance?: 1 | 2 | 3 | 4 | 5;
+  isMajor?: boolean;
+  relatedIds?: string[];
+  media?: {
+    image?: string;
+    caption?: string;
+  };
   category:
     | "Recruitment & Training"
     | "CIA Career"
@@ -346,6 +354,32 @@ export const locations: LocationPoint[] = [
       "Sent after 9/11 to run counterterrorism operations, he describes a six-week hunt that culminated in the February 2002 capture of Abu Zubaydah.",
   },
   {
+    id: "faisalabad-abu-zubaydah-raids",
+    name: "Faisalabad, Pakistan",
+    lat: 31.4504,
+    lng: 73.1350,
+    order: 19.2,
+    type: "Abu Zubaydah raid location",
+    year: "March 2002",
+    category: "Counterterrorism",
+    description: "Specifies Faisalabad as the city where raids captured Abu Zubaydah.",
+    story:
+      "He says the decisive raids that led to Abu Zubaydah's capture were executed in Faisalabad, adding city-level precision to earlier references that described the operation only as taking place in Pakistan.",
+  },
+  {
+    id: "pakistan-coffee-shop-recruitment",
+    name: "Pakistan coffee shop (unspecified city)",
+    lat: 33.6844,
+    lng: 73.0479,
+    order: 19.25,
+    type: "Asset recruitment operation",
+    year: "Post-9/11 period",
+    category: "Counterterrorism",
+    description: "Three-week relationship-build operation targeting mid-level al-Qaeda network access.",
+    story:
+      "He recounts repeatedly visiting a coffee shop where four fighters met daily, gradually befriending one through incremental social contact. He says he eventually disclosed CIA affiliation and recruited him in exchange for a first-class ticket to Cairo to see family, including a son he had never met.",
+  },
+  {
     id: "langley-post-zubaydah",
     name: "CIA Headquarters (Langley), Virginia, USA",
     lat: 38.9517,
@@ -632,6 +666,19 @@ export const locations: LocationPoint[] = [
       "He says he spent substantial time in Bahrain during nearly five years in the Gulf, and recalls incidents where pallets of Iranian weapons in waterproof containers washed ashore as part of regional destabilization efforts.",
   },
   {
+    id: "bahrain-human-rights-officer",
+    name: "Manama, Bahrain (human rights officer period)",
+    lat: 26.2235,
+    lng: 50.5876,
+    order: 35.62,
+    type: "Human rights reporting and liaison conflict",
+    year: "Likely late 1990s to early 2000s",
+    category: "CIA Career",
+    description: "Says he wrote annual human rights reporting while confronting host-government abuses.",
+    story:
+      "He says he served as station human rights officer responsible for annual reports sent to Congress, including raising a teen protestor death in custody with Bahrain's interior minister. He also says station leadership simultaneously pursued funding for a secret prison, undermining human rights objectives.",
+  },
+  {
     id: "gulf-states-regional-coverage",
     name: "Gulf states region (Saudi, Kuwait, Bahrain, Qatar, Oman, UAE)",
     lat: 25.2048,
@@ -838,6 +885,71 @@ export const locations: LocationPoint[] = [
     description: "Says he boarded a tramp steamer toward Antarctica from Argentina's southern tip.",
     story:
       "He recounts traveling from Tierra del Fuego on a honeymoon route toward Antarctica, stopping near a former junta-era prison island and describing extreme remoteness, wildlife encounters, and detainee-site speculation.",
+  },
+  {
+    id: "middle-east-gay-recruitment-case",
+    name: "Unspecified Middle Eastern country (targeted recruitment case)",
+    lat: 33.2232,
+    lng: 43.6793,
+    order: 38.8,
+    type: "Human-intelligence targeting operation",
+    year: "Early operations career",
+    category: "CIA Career",
+    description: "Describes controversial headquarters-directed social approach to recruit foreign ministry target.",
+    story:
+      "He says he surveilled a foreign ministry official and, after determining personal vulnerabilities, was directed to mirror identity cues to build closeness. He recounts multiple social meetings and says the target ultimately provided intelligence and later rose to ambassador rank.",
+  },
+  {
+    id: "middle-east-ugly-woman-recruitment",
+    name: "Unspecified Middle Eastern country (foreign-service recruitment case)",
+    lat: 31.7683,
+    lng: 35.2137,
+    order: 38.82,
+    type: "Early recruitment assignment",
+    year: "Early operations career",
+    category: "CIA Career",
+    description: "Tasked with developing a foreign intelligence-service officer as an asset.",
+    story:
+      "He says a superior initially made a crude joke about seduction, then told him to run a conventional recruitment operation. He says he proceeded with standard tradecraft rather than sexual entrapment.",
+  },
+  {
+    id: "route-123-steakhouse-warning",
+    name: "Route 123 corridor near CIA Headquarters, Virginia",
+    lat: 38.9398,
+    lng: -77.1791,
+    order: 38.9,
+    type: "First-day CIA security warning",
+    year: "Early CIA tenure",
+    category: "CIA Career",
+    description: "Says new hires were warned to avoid a nearby restaurant viewed as hostile-intelligence collection point.",
+    story:
+      "He recounts being told on day one never to eat at the nearest Route 123 steakhouse because it was believed hostile intelligence officers monitored CIA employees there for operational slips.",
+  },
+  {
+    id: "off-campus-israeli-briefing-site",
+    name: "Rented off-campus liaison site (Virginia, near Langley)",
+    lat: 38.9190,
+    lng: -77.2300,
+    order: 39.0,
+    type: "Israeli liaison briefing location",
+    year: "Early CIA career",
+    category: "CIA Career",
+    description: "Says CIA used external briefing site after repeated in-building technical-security concerns.",
+    story:
+      "He says Israeli meetings were shifted to a rented location away from headquarters due to recurring bugging concerns in CIA conference spaces. He identifies this site as where he gave his first classified Saddam-psychology briefing and where an Israeli officer attempted to recruit him.",
+  },
+  {
+    id: "niceville-florida-billy-waugh",
+    name: "Niceville, Florida",
+    lat: 30.5169,
+    lng: -86.4822,
+    order: 39.1,
+    type: "Billy Waugh reference point",
+    year: "Undated",
+    category: "Context",
+    description: "Associated with Billy Waugh's residence and anecdotal interactions.",
+    story:
+      "He references Niceville as Billy Waugh's home base and cites Waugh's personalized license plate as part of stories illustrating legacy CIA paramilitary culture.",
   },
   {
     id: "somaliland-reference",
